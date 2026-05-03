@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Athaang — Therapy & Healing</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:   #1c2e28;
+  --deep:  #0e1e1a;
+  --moss:  #3d6b5e;
+  --sage:  #6b9e8f;
+  --w1:    #b8d8d0;
+  --w2:    #cfe6df;
+  --w3:    #e2f0ec;
+  --w4:    #f0f7f5;
+  --foam:  #f5faf8;
+  --cream: #faf7f2;
+  --sand:  #f0e9da;
+  --gold:  #c8a96e;
+  --dusk:  #1b3848;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: 'Cormorant Garamond', serif;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ── CURSOR ── */
+#cur  { width:12px; height:12px; border:2px solid var(--sage); border-radius:50%; position:fixed; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); transition:width .3s, height .3s, background .3s; }
+#cur2 { width:38px; height:38px; border:1px solid rgba(107,158,143,.3); border-radius:50%; position:fixed; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); transition:left .13s ease, top .13s ease; }
+
+/* ── NAV ── */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:200;
+  padding:20px 52px;
+  display:flex; justify-content:space-between; align-items:center;
+  backdrop-filter:blur(20px) saturate(1.4);
+  background:rgba(250,247,242,.8);
+  border-bottom:1px solid rgba(184,216,208,.25);
+}
+.logo { font-family:'Caveat',cursive; font-size:1.9rem; font-weight:700; color:var(--moss); text-decoration:none; }
+.logo span { color:var(--sage); }
+.nav-links { display:flex; gap:40px; list-style:none; }
+.nav-links a { font-family:'Caveat',cursive; font-size:1.1rem; color:var(--moss); text-decoration:none; position:relative; transition:color .4s; }
+.nav-links a::after { content:''; position:absolute; bottom:-4px; left:0; width:0; height:2px; background:var(--sage); border-radius:2px; transition:width .5s cubic-bezier(.4,0,.2,1); }
+.nav-links a:hover::after { width:100%; }
+.nav-links a:hover { color:var(--sage); }
+.nav-btn {
+  font-family:'Caveat',cursive; font-size:1rem;
+  background:var(--moss); color:var(--cream);
+  border:none; padding:10px 28px; border-radius:50px;
+  cursor:none; transition:all .4s;
+}
+.nav-btn:hover { background:var(--deep); transform:translateY(-2px); }
+
+/* ── HERO — the beach scene ── */
+.hero {
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  /* Sky gradient — warm morning at the beach */
+  background: linear-gradient(180deg,
+    #d6eaf5 0%,
+    #c8e0ef 15%,
+    #bfd9eb 30%,
+    #b8d4e8 45%,
+    #c2dce8 58%,
+    #cde5e8 70%,
+    #d8eceb 80%,
+    #e0f0ee 90%,
+    #e8f4f0 100%
+  );
+}
+
+/* Full hero canvas — sky, sea, sand, waves */
+#beachCanvas {
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  z-index:1; pointer-events:none;
+}
+
+/* Sun shimmer overlay */
+.sun-shimmer {
+  position:absolute; z-index:2; pointer-events:none;
+  border-radius:50%;
+  background: radial-gradient(circle, rgba(255,240,180,.22) 0%, transparent 70%);
+  animation: shimmerPulse 6s ease-in-out infinite;
+}
+@keyframes shimmerPulse {
+  0%, 100% { opacity:.6; transform:scale(1); }
+  50%       { opacity:1;  transform:scale(1.12); }
+}
+
+.hero-content {
+  position:relative; z-index:10;
+  max-width:640px;
+  padding: 120px 8vw 260px;
+}
+
+.hero-tag {
+  font-family:'Caveat',cursive; font-size:1.1rem; color:var(--moss);
+  letter-spacing:.06em; display:inline-flex; align-items:center; gap:10px;
+  margin-bottom:20px;
+  opacity:0; animation:fadeUp 1s ease forwards .4s;
+}
+.hero-tag::before { content:''; width:28px; height:1.5px; background:var(--sage); border-radius:2px; }
+
+.hero-title {
+  font-family:'DM Serif Display', serif;
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  line-height:1.06; color:var(--deep);
+  margin-bottom:24px;
+  opacity:0; animation:fadeUp 1.1s ease forwards .65s;
+}
+.hero-title em { font-style:italic; color:var(--sage); display:block; }
+
+.hero-sub {
+  font-size:1.25rem; font-weight:300; color:var(--moss);
+  line-height:1.85; max-width:460px; margin-bottom:46px;
+  opacity:0; animation:fadeUp 1.1s ease forwards .9s;
+}
+
+.hero-btns {
+  display:flex; gap:16px; flex-wrap:wrap;
+  opacity:0; animation:fadeUp 1.1s ease forwards 1.15s;
+}
+.btn-p {
+  font-family:'Caveat',cursive; font-size:1.1rem;
+  background:var(--moss); color:var(--cream);
+  border:none; padding:15px 40px; border-radius:50px;
+  cursor:none; transition:all .45s;
+  box-shadow:0 8px 32px rgba(61,107,94,.22);
+  text-decoration:none; display:inline-block;
+}
+.btn-p:hover { background:var(--deep); transform:translateY(-4px); box-shadow:0 18px 44px rgba(61,107,94,.3); }
+.btn-s {
+  font-family:'Caveat',cursive; font-size:1.1rem;
+  background:rgba(255,255,255,.45); color:var(--moss);
+  border:1.5px solid rgba(107,158,143,.4);
+  padding:13px 38px; border-radius:50px;
+  cursor:none; transition:all .45s; text-decoration:none; display:inline-block;
+  backdrop-filter:blur(8px);
+}
+.btn-s:hover { border-color:var(--sage); color:var(--sage); transform:translateY(-4px); }
+
+/* floating illo */
+.hero-illo {
+  position:absolute; right:5vw; top:50%; transform:translateY(-55%);
+  z-index:10; opacity:0; animation:fadeIn 1.6s ease forwards 1.2s;
+}
+.float-anim { animation:floatY 6s ease-in-out infinite; }
+
+@keyframes floatY  { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-13px);} }
+@keyframes fadeUp  { from{opacity:0;transform:translateY(26px);} to{opacity:1;transform:translateY(0);} }
+@keyframes fadeIn  { from{opacity:0;} to{opacity:1;} }
+
+/* ── SECTIONS ── */
+.section { padding:100px 8vw; position:relative; }
+.slabel {
+  font-family:'Caveat',cursive; font-size:.95rem; color:var(--sage);
+  letter-spacing:.1em; text-transform:uppercase;
+  display:flex; align-items:center; gap:12px; margin-bottom:16px;
+}
+.slabel::after { content:''; width:44px; height:1px; background:var(--w1); }
+.stitle { font-family:'DM Serif Display', serif; font-size:clamp(2rem,3.6vw,3.1rem); color:var(--deep); line-height:1.18; }
+.stitle em { font-style:italic; color:var(--sage); }
+
+/* reveal */
+.rev   { opacity:0; transform:translateY(22px); transition:opacity .85s ease, transform .85s ease; }
+.rev-l { opacity:0; transform:translateX(-26px); transition:opacity .85s ease, transform .85s ease; }
+.rev-r { opacity:0; transform:translateX(26px);  transition:opacity .85s ease, transform .85s ease; }
+.rev.vis, .rev-l.vis, .rev-r.vis { opacity:1; transform:none; }
+
+/* ── CALLIGRAPHY CONNECTORS ── */
+.callig {
+  position: relative;
+  width: 100%;
+  overflow: visible;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 0;
+  z-index: 5;
+}
+.callig svg {
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+/* Ink paths — start invisible, draw on when .ink-drawn */
+.ink-path {
+  stroke-dasharray: 2000;
+  stroke-dashoffset: 2000;
+  transition: stroke-dashoffset 2.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.ink-path.fast {
+  transition: stroke-dashoffset 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.ink-path.slow {
+  transition: stroke-dashoffset 3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.callig.ink-drawn .ink-path {
+  stroke-dashoffset: 0;
+}
+/* Ink blot dots — scale in */
+.ink-dot {
+  transform-origin: center;
+  opacity: 0;
+  transform: scale(0);
+  transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+.callig.ink-drawn .ink-dot {
+  opacity: 1;
+  transform: scale(1);
+}
+/* Delay helpers */
+.d1 { transition-delay: 0.3s; }
+.d2 { transition-delay: 0.6s; }
+.d3 { transition-delay: 0.9s; }
+.d4 { transition-delay: 1.2s; }
+.d5 { transition-delay: 1.5s; }
+.d6 { transition-delay: 1.8s; }
+
+/* ── ABOUT ── */
+.about-bg { background:linear-gradient(180deg, var(--foam) 0%, var(--w3) 100%); overflow:hidden; }
+.about-grid { display:grid; grid-template-columns:1fr 1fr; gap:72px; align-items:center; margin-top:56px; }
+.atext p { font-size:1.18rem; line-height:1.9; color:var(--moss); margin-bottom:20px; font-weight:300; }
+.atext p strong { font-weight:500; color:var(--deep); }
+.hnote {
+  font-family:'Caveat',cursive; font-size:1.38rem; color:var(--sage);
+  background:rgba(255,255,255,.65); padding:20px 26px;
+  border-radius:20px 20px 20px 4px;
+  border-left:3px solid var(--sage);
+  margin-top:28px; line-height:1.65;
+  backdrop-filter:blur(8px);
+  box-shadow:0 4px 24px rgba(107,158,143,.09);
+  position:relative;
+}
+.hnote::before { content:'"'; position:absolute; top:-8px; left:18px; font-size:3.8rem; color:var(--w1); font-family:'DM Serif Display',serif; line-height:1; }
+
+.avisual { display:flex; justify-content:center; align-items:center; position:relative; }
+.ocard {
+  position:relative; width:310px; height:370px;
+  border-radius:50% 50% 48% 52%/44% 44% 56% 56%;
+  overflow:hidden;
+  box-shadow:0 28px 70px rgba(61,107,94,.18), 0 0 0 2px rgba(184,216,208,.4);
+  animation:morphCard 14s ease-in-out infinite alternate;
+}
+@keyframes morphCard {
+  0%   { border-radius:50% 50% 48% 52%/44% 44% 56% 56%; }
+  50%  { border-radius:44% 56% 52% 48%/54% 46% 54% 46%; }
+  100% { border-radius:54% 46% 44% 56%/46% 54% 46% 54%; }
+}
+.ocard-in {
+  position:absolute; inset:0;
+  background:linear-gradient(165deg, #d8eae4 0%, var(--w1) 42%, var(--sage) 100%);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:10px;
+}
+.ocard-wave { position:absolute; bottom:0; left:0; width:100%; pointer-events:none; }
+.cstat { z-index:1; }
+.cstat .num { font-family:'DM Serif Display',serif; font-size:3.8rem; color:white; line-height:1; display:block; text-shadow:0 3px 16px rgba(0,0,0,.12); }
+.cstat span { font-family:'Caveat',cursive; font-size:1rem; color:rgba(255,255,255,.85); }
+.badge { position:absolute; background:rgba(255,255,255,.92); border:1.5px solid var(--w1); border-radius:50px; padding:9px 20px; font-family:'Caveat',cursive; font-size:.95rem; color:var(--moss); box-shadow:0 6px 20px rgba(0,0,0,.06); backdrop-filter:blur(6px); }
+.b1 { top:8px; right:-16px; }
+.b2 { bottom:28px; left:-20px; }
+
+/* ── SERVICES ── */
+.svc-bg { background:var(--cream); overflow:hidden; }
+.svc-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:52px; position:relative; z-index:1; }
+.svc {
+  background:rgba(255,255,255,.75);
+  border:1.5px solid rgba(184,216,208,.45);
+  border-radius:24px; padding:38px 28px;
+  transition:all .5s cubic-bezier(.4,0,.2,1);
+  position:relative; overflow:hidden; cursor:none;
+  backdrop-filter:blur(8px);
+}
+.svc::after {
+  content:''; position:absolute;
+  bottom:-70px; left:-10%; right:-10%; height:100px;
+  background:radial-gradient(ellipse at 50% 100%, rgba(184,216,208,.28) 0%, transparent 70%);
+  border-radius:50%; transition:bottom .65s ease, opacity .65s ease; opacity:0;
+}
+.svc:hover::after { bottom:-18px; opacity:1; }
+.svc:hover { transform:translateY(-8px); box-shadow:0 22px 56px rgba(107,158,143,.16); border-color:rgba(107,158,143,.45); background:rgba(255,255,255,.92); }
+.svc-icon { font-size:2.2rem; margin-bottom:16px; display:block; animation:floatY 5s ease-in-out infinite; }
+.svc:nth-child(2) .svc-icon { animation-delay:-1.8s; }
+.svc:nth-child(3) .svc-icon { animation-delay:-3.2s; }
+.svc:nth-child(4) .svc-icon { animation-delay:-.9s; }
+.svc:nth-child(5) .svc-icon { animation-delay:-4.1s; }
+.svc:nth-child(6) .svc-icon { animation-delay:-2.4s; }
+.svc h3 { font-family:'DM Serif Display',serif; font-size:1.4rem; color:var(--deep); margin-bottom:11px; }
+.svc p  { font-size:1rem; color:var(--moss); line-height:1.75; font-weight:300; }
+.svc-tag { display:inline-block; margin-top:16px; font-family:'Caveat',cursive; font-size:.9rem; color:var(--sage); background:rgba(107,158,143,.1); padding:3px 14px; border-radius:20px; }
+
+/* ── APPROACH ── */
+.app-bg { background:linear-gradient(180deg, var(--w4) 0%, var(--w3) 100%); overflow:hidden; }
+.sg-wrap { position:absolute; bottom:0; left:0; right:0; height:90px; pointer-events:none; z-index:0; }
+.gblade { position:absolute; bottom:0; border-radius:3px 3px 0 0; background:linear-gradient(to top, var(--sage), rgba(107,158,143,0)); transform-origin:bottom center; }
+.app-grid { display:grid; grid-template-columns:1fr 1fr; gap:76px; align-items:center; margin-top:52px; position:relative; z-index:1; }
+.steps { display:flex; flex-direction:column; gap:26px; }
+.step {
+  display:flex; gap:22px; align-items:flex-start;
+  padding:20px 24px; background:rgba(255,255,255,.6);
+  border-radius:16px; border:1px solid rgba(184,216,208,.38);
+  transition:all .5s; cursor:none; backdrop-filter:blur(6px);
+}
+.step:hover { background:rgba(255,255,255,.9); transform:translateX(6px); box-shadow:0 10px 36px rgba(107,158,143,.11); }
+.step-n { font-family:'Caveat',cursive; font-size:2.6rem; color:var(--w1); line-height:1; min-width:48px; }
+.step h4 { font-family:'DM Serif Display',serif; font-size:1.22rem; color:var(--deep); margin-bottom:6px; }
+.step p  { font-size:1rem; color:var(--moss); line-height:1.7; font-weight:300; }
+.qsphere { display:flex; justify-content:center; align-items:center; }
+.sphere {
+  width:340px; height:340px; border-radius:50%;
+  background:radial-gradient(circle at 38% 35%, var(--w2), var(--w1) 55%, var(--sage) 100%);
+  display:flex; align-items:center; justify-content:center; position:relative;
+  box-shadow:0 28px 70px rgba(107,158,143,.2), inset 0 -18px 36px rgba(61,107,94,.08);
+  animation:spulse 9s ease-in-out infinite;
+}
+@keyframes spulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.03);} }
+.sr1 { position:absolute; inset:-18px; border-radius:50%; border:1px dashed rgba(107,158,143,.35); animation:spin 30s linear infinite; }
+.sr2 { position:absolute; inset:-36px; border-radius:50%; border:1px dashed rgba(184,216,208,.25); animation:spin 50s linear infinite reverse; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.sr1::before, .sr1::after { content:'✦'; position:absolute; color:var(--sage); font-size:.7rem; }
+.sr1::before { top:0; left:50%; transform:translateX(-50%); }
+.sr1::after  { bottom:0; left:50%; transform:translateX(-50%); }
+.sphere-txt { font-family:'DM Serif Display',serif; font-size:1.38rem; font-style:italic; color:white; text-align:center; padding:36px; line-height:1.6; text-shadow:0 2px 12px rgba(0,0,0,.13); }
+.sphere-txt small { font-family:'Caveat',cursive; font-size:.95rem; font-style:normal; opacity:.78; display:block; margin-top:13px; }
+
+/* ── TESTIMONIALS ── */
+.testi { padding:100px 8vw; background:var(--dusk); position:relative; overflow:hidden; }
+#testiCanvas { position:absolute; inset:0; width:100%; height:100%; z-index:0; pointer-events:none; }
+.testi .slabel { color:var(--w1); }
+.testi .slabel::after { background:var(--w2); }
+.testi .stitle { color:var(--foam); }
+.testi .stitle em { color:var(--w1); }
+.tgrid { display:grid; grid-template-columns:repeat(3,1fr); gap:22px; margin-top:52px; position:relative; z-index:1; }
+.tcard { background:rgba(255,255,255,.055); border:1px solid rgba(184,216,208,.15); border-radius:20px; padding:34px 28px; transition:all .5s; cursor:none; }
+.tcard:hover { background:rgba(255,255,255,.1); transform:translateY(-6px); }
+.qm { font-family:'DM Serif Display',serif; font-size:3.8rem; color:var(--sage); opacity:.48; line-height:.8; margin-bottom:16px; }
+.tcard p { font-family:'Cormorant Garamond',serif; font-size:1.08rem; font-style:italic; color:var(--w2); line-height:1.84; font-weight:300; margin-bottom:20px; }
+.tcard .author { font-family:'Caveat',cursive; font-size:1.05rem; color:var(--w1); }
+.stars { color:var(--gold); font-size:.78rem; letter-spacing:3px; margin-top:5px; }
+
+/* ── CONTACT ── */
+.cnt-bg { background:var(--foam); overflow:hidden; }
+.cnt-grid { display:grid; grid-template-columns:1fr 1fr; gap:76px; margin-top:52px; align-items:start; position:relative; z-index:1; }
+.faq-item { border-bottom:1px solid var(--w1); padding:20px 0; cursor:none; }
+.faq-q { font-family:'DM Serif Display',serif; font-size:1.15rem; color:var(--deep); display:flex; justify-content:space-between; align-items:center; transition:color .4s; }
+.faq-q:hover { color:var(--sage); }
+.faq-tog { font-family:'Caveat',cursive; font-size:1.55rem; color:var(--sage); transition:transform .4s ease; min-width:22px; text-align:center; }
+.faq-a { font-size:1.02rem; color:var(--moss); line-height:1.78; font-weight:300; max-height:0; overflow:hidden; transition:max-height .5s ease, padding .35s; }
+.faq-item.open .faq-a { max-height:250px; padding-top:13px; }
+.faq-item.open .faq-tog { transform:rotate(45deg); }
+.cform { display:flex; flex-direction:column; gap:16px; }
+.fg { display:flex; flex-direction:column; gap:6px; }
+.fg label { font-family:'Caveat',cursive; font-size:1rem; color:var(--moss); }
+.fg input, .fg textarea, .fg select {
+  font-family:'Cormorant Garamond',serif; font-size:1rem;
+  background:rgba(255,255,255,.82); border:1.5px solid var(--w1);
+  border-radius:13px; padding:12px 18px; color:var(--deep);
+  outline:none; transition:border-color .4s, background .4s, box-shadow .4s;
+  cursor:none; appearance:none; backdrop-filter:blur(4px);
+}
+.fg input:focus, .fg textarea:focus, .fg select:focus { border-color:var(--sage); background:white; box-shadow:0 0 0 4px rgba(107,158,143,.07); }
+.fg textarea { min-height:105px; resize:vertical; }
+.fsub {
+  font-family:'Caveat',cursive; font-size:1.1rem;
+  background:var(--moss); color:var(--cream);
+  border:none; padding:15px 40px; border-radius:50px;
+  cursor:none; transition:all .45s; align-self:flex-start;
+  box-shadow:0 9px 28px rgba(61,107,94,.22);
+}
+.fsub:hover { background:var(--deep); transform:translateY(-3px); }
+
+/* ── FOOTER ── */
+footer { background:var(--deep); padding:65px 8vw 38px; position:relative; overflow:hidden; }
+.fwave { position:absolute; top:-2px; left:0; width:100%; }
+.foot-in { position:relative; z-index:1; display:grid; grid-template-columns:2fr 1fr 1fr; gap:56px; padding-top:44px; }
+.fbrand .fname { font-family:'Caveat',cursive; font-size:2.2rem; color:var(--cream); display:block; margin-bottom:13px; }
+.fbrand p { font-size:.98rem; color:var(--w1); line-height:1.72; font-weight:300; max-width:270px; }
+.fcol h5 { font-family:'Caveat',cursive; font-size:1.05rem; color:var(--w1); margin-bottom:16px; letter-spacing:.05em; }
+.fcol ul { list-style:none; display:flex; flex-direction:column; gap:10px; }
+.fcol ul a { font-size:.92rem; color:var(--w2); text-decoration:none; transition:color .4s; font-weight:300; }
+.fcol ul a:hover { color:var(--cream); }
+.fbot { margin-top:52px; padding-top:20px; border-top:1px solid rgba(184,216,208,.1); display:flex; justify-content:space-between; align-items:center; position:relative; z-index:1; }
+.fbot p { font-family:'Caveat',cursive; font-size:.88rem; color:var(--w1); opacity:.45; }
+
+@media(max-width:900px) {
+  nav { padding:16px 22px; } .nav-links { display:none; }
+  .hero-content { padding:110px 6vw 200px; } .hero-illo { display:none; }
+  .about-grid, .app-grid, .cnt-grid, .foot-in { grid-template-columns:1fr; gap:38px; }
+  .svc-grid, .tgrid { grid-template-columns:1fr; }
+  .sphere { width:260px; height:260px; } .ocard { width:250px; height:310px; }
+}
+</style>
+</head>
+<body>
+
+<div id="cur"></div><div id="cur2"></div>
+
+<nav>
+  <a href="#" class="logo">Atha<span>ang</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#approach">Approach</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="nav-btn">Book a Session</button>
+</nav>
+
+<!-- ═══════════════════════════════
+     HERO — sitting on a beach
+═══════════════════════════════ -->
+<section class="hero" id="hero">
+  <canvas id="beachCanvas"></canvas>
+
+  <!-- Sun glow -->
+  <div class="sun-shimmer" style="width:320px;height:320px;top:8%;right:18%;"></div>
+
+  <div class="hero-content">
+    <span class="hero-tag">Therapy &amp; Healing</span>
+    <h1 class="hero-title">
+      Find your calm<br>
+      <em>beneath the waves</em>
+    </h1>
+    <p class="hero-sub">
+      A safe, warm space where your emotions are met with curiosity — not judgment. Together, we navigate what lies beneath.
+    </p>
+    <div class="hero-btns">
+      <a href="#contact" class="btn-p">Begin Your Journey</a>
+      <a href="#about"   class="btn-s">Meet Athaang →</a>
+    </div>
+  </div>
+
+  <div class="hero-illo">
+    <svg width="380" height="420" viewBox="0 0 380 420" fill="none" xmlns="http://www.w3.org/2000/svg" class="float-anim">
+      <defs>
+        <radialGradient id="rg1" cx="50%" cy="40%"><stop offset="0%" stop-color="#dceee9"/><stop offset="100%" stop-color="#a8c5bc" stop-opacity="0"/></radialGradient>
+        <radialGradient id="rg2" cx="40%" cy="35%"><stop offset="0%" stop-color="#cde6de"/><stop offset="100%" stop-color="#6b9e8f"/></radialGradient>
+        <radialGradient id="rg3" cx="35%" cy="30%"><stop offset="0%" stop-color="#f0f7f5"/><stop offset="100%" stop-color="#b8d8d0"/></radialGradient>
+        <filter id="sg"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+      <ellipse cx="190" cy="220" rx="162" ry="172" fill="url(#rg1)" opacity=".5"/>
+      <path d="M190 58 C266 65 328 128 338 202 C348 276 302 348 232 368 C162 388 90 352 64 280 C38 208 74 128 136 92 C157 80 176 54 190 58Z" fill="url(#rg2)" opacity=".6"/>
+      <path d="M190 82 C248 90 300 140 308 202 C316 264 282 326 222 342 C162 358 104 322 86 262 C68 202 98 138 148 108 C166 96 184 78 190 82Z" fill="url(#rg3)" opacity=".68"/>
+      <circle cx="190" cy="210" r="90"  stroke="#6b9e8f" stroke-width="1" stroke-dasharray="6 5" fill="none" opacity=".22"/>
+      <circle cx="190" cy="210" r="118" stroke="#a8c5bc" stroke-width=".8" stroke-dasharray="4 7" fill="none" opacity=".16"/>
+      <circle cx="190" cy="210" r="145" stroke="#cfe6df" stroke-width=".6" stroke-dasharray="3 9" fill="none" opacity=".11"/>
+      <ellipse cx="190" cy="196" rx="36" ry="50" fill="#d4eae4" opacity=".78"/>
+      <ellipse cx="159" cy="215" rx="27" ry="37" fill="#c8e0d8" opacity=".58" transform="rotate(-32 159 215)"/>
+      <ellipse cx="221" cy="215" rx="27" ry="37" fill="#c8e0d8" opacity=".58" transform="rotate(32 221 215)"/>
+      <ellipse cx="170" cy="246" rx="24" ry="33" fill="#bdd8cf" opacity=".48" transform="rotate(-15 170 246)"/>
+      <ellipse cx="210" cy="246" rx="24" ry="33" fill="#bdd8cf" opacity=".48" transform="rotate(15 210 246)"/>
+      <circle cx="190" cy="206" r="17" fill="#3d6b5e" opacity=".82" filter="url(#sg)"/>
+      <circle cx="190" cy="206" r="9"  fill="#a8c5bc"/>
+      <circle cx="186" cy="202" r="3.5" fill="white" opacity=".6"/>
+      <text x="78"  y="114" font-size="12" fill="#6b9e8f" opacity=".42">✦</text>
+      <text x="288" y="136" font-size="10" fill="#a8c5bc" opacity=".48">✦</text>
+      <text x="296" y="322" font-size="11" fill="#cfe6df" opacity=".44">✦</text>
+      <path d="M76 380 Q116 368 156 382 Q196 396 236 378 Q270 363 306 376" stroke="#a8c5bc" stroke-width="1.7" stroke-linecap="round" fill="none" opacity=".3"/>
+      <path d="M96 398 Q136 386 176 398 Q214 410 252 394" stroke="#cfe6df" stroke-width="1.2" stroke-linecap="round" fill="none" opacity=".22"/>
+      <circle cx="108" cy="164" r="6" fill="none" stroke="rgba(184,216,208,.52)" stroke-width="1"/>
+      <circle cx="278" cy="172" r="5" fill="none" stroke="rgba(184,216,208,.44)" stroke-width="1"/>
+    </svg>
+  </div>
+</section>
+
+<!-- Calligraphy 1: hero → about -->
+<div class="callig" id="cal1" style="background:var(--foam);padding:14px 0;">
+  <svg viewBox="0 0 1440 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:100px;overflow:visible;">
+    <path class="ink-path" d="M 60 70 C 180 30, 360 80, 520 45 C 680 10, 780 65, 920 40 C 1060 15, 1180 72, 1380 48" stroke="#6b9e8f" stroke-width="1.8" stroke-linecap="round" fill="none" opacity=".5"/>
+    <path class="ink-path d1" d="M 100 80 C 280 55, 480 88, 660 62 C 840 36, 1040 78, 1220 58 C 1320 46, 1390 72, 1420 65" stroke="#b8d8d0" stroke-width="1" stroke-linecap="round" fill="none" opacity=".4"/>
+    <path class="ink-path d2" d="M 50 65 C 35 48, 24 30, 40 16 C 52 5, 68 14, 62 30 C 56 46, 42 52, 50 65Z" stroke="#6b9e8f" stroke-width="1.3" stroke-linecap="round" fill="none" opacity=".38"/>
+    <path class="ink-path d2" d="M 50 65 C 30 78, 16 68, 24 52" stroke="#6b9e8f" stroke-width="1" stroke-linecap="round" fill="none" opacity=".28"/>
+    <path class="ink-path d2" d="M 1390 50 C 1410 36, 1428 24, 1435 8 C 1438 2, 1428 -2, 1418 10 C 1408 22, 1412 38, 1390 50Z" stroke="#6b9e8f" stroke-width="1.3" stroke-linecap="round" fill="none" opacity=".38"/>
+    <path class="ink-path d3" d="M 680 28 C 720 18, 780 14, 840 22" stroke="#3d6b5e" stroke-width="1.5" stroke-linecap="round" fill="none" opacity=".25"/>
+    <circle class="ink-dot d3" cx="520" cy="44" r="3.5" fill="#6b9e8f" opacity=".32"/>
+    <circle class="ink-dot d4" cx="920" cy="38" r="2.5" fill="#6b9e8f" opacity=".28"/>
+    <circle class="ink-dot d4" cx="220" cy="62" r="2" fill="#b8d8d0" opacity=".38"/>
+    <text class="ink-dot d4" x="720" y="15" font-size="10" fill="#6b9e8f" opacity=".32" text-anchor="middle">✦</text>
+    <text class="ink-dot d5" x="1100" y="28" font-size="8" fill="#b8d8d0" opacity=".38" text-anchor="middle">✦</text>
+  </svg>
+</div>
+
+<!-- ABOUT -->
+<section class="section about-bg" id="about">
+  <div class="slabel">About Athaang</div>
+  <h2 class="stitle">Healing begins with<br><em>being truly heard</em></h2>
+  <div class="about-grid">
+    <div class="atext rev-l">
+      <p>Welcome. I'm <strong>Athaang</strong> — a therapist dedicated to creating a gentle, safe harbour for your inner world. My practice weaves together <strong>depth psychology, somatic awareness, and mindfulness</strong> into a flowing, personalised healing journey.</p>
+      <p>I believe each of us carries deep wisdom within — sometimes buried under layers of pain, anxiety, or grief. Therapy, at its heart, is the art of listening beneath the surface.</p>
+      <div class="hnote">"You don't have to drown in your feelings alone. I'll meet you right there, in the water."</div>
+    </div>
+    <div class="avisual rev-r">
+      <div class="ocard">
+        <div class="ocard-in">
+          <div class="cstat"><b class="num">8+</b><span>years of practice</span></div>
+          <div style="width:55%;height:1px;background:rgba(255,255,255,.26);margin:16px 0;"></div>
+          <div class="cstat"><b class="num">500+</b><span>lives touched</span></div>
+          <svg class="ocard-wave" viewBox="0 0 310 55" preserveAspectRatio="none" fill="none">
+            <path d="M0,28 C52,10 104,48 156,28 C208,10 260,48 310,28 L310,55 L0,55Z" fill="rgba(255,255,255,.17)"/>
+            <path d="M0,40 C52,24 104,56 156,40 C208,24 260,56 310,40 L310,55 L0,55Z" fill="rgba(255,255,255,.1)"/>
+          </svg>
+        </div>
+      </div>
+      <div class="badge b1">🌿 Certified Therapist</div>
+      <div class="badge b2">💧 Trauma-Informed</div>
+    </div>
+  </div>
+</section>
+
+<!-- Calligraphy 2: about → services -->
+<div class="callig" id="cal2" style="background:var(--cream);padding:14px 0;">
+  <svg viewBox="0 0 1440 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:100px;overflow:visible;">
+    <path class="ink-path" d="M 30 50 C 120 20, 260 75, 420 38 C 580 1, 720 60, 880 32 C 1040 4, 1180 65, 1340 42 C 1390 34, 1420 48, 1430 44" stroke="#3d6b5e" stroke-width="2" stroke-linecap="round" fill="none" opacity=".42"/>
+    <path class="ink-path d1" d="M 80 62 C 220 42, 400 78, 580 55 C 760 32, 940 72, 1120 50 C 1260 34, 1360 60, 1400 55" stroke="#b8d8d0" stroke-width="1.1" stroke-linecap="round" fill="none" opacity=".38"/>
+    <path class="ink-path d3" d="M 700 18 C 730 8, 760 4, 790 10 C 810 16, 808 24, 790 26 C 770 28, 748 22, 740 30 C 734 36, 748 42, 760 40" stroke="#6b9e8f" stroke-width="1.3" stroke-linecap="round" fill="none" opacity=".38"/>
+    <path class="ink-path d2" d="M 38 44 C 20 30, 10 16, 22 6 C 30 -2, 44 4, 40 18 C 36 30, 24 36, 38 44Z" stroke="#6b9e8f" stroke-width="1.2" fill="none" opacity=".36"/>
+    <path class="ink-path d2" d="M 1402 46 C 1416 30, 1430 18, 1436 4" stroke="#6b9e8f" stroke-width="1" stroke-linecap="round" fill="none" opacity=".3"/>
+    <path class="ink-path d2" d="M 1436 4 C 1428 -2, 1420 2, 1424 12" stroke="#6b9e8f" stroke-width="1" stroke-linecap="round" fill="none" opacity=".3"/>
+    <circle class="ink-dot d3" cx="420" cy="36" r="4" fill="#6b9e8f" opacity=".3"/>
+    <circle class="ink-dot d4" cx="880" cy="30" r="3" fill="#6b9e8f" opacity=".26"/>
+    <circle class="ink-dot d5" cx="1180" cy="46" r="2.5" fill="#b8d8d0" opacity=".35"/>
+    <text class="ink-dot d3" x="580" y="10" font-size="9" fill="#6b9e8f" opacity=".3" text-anchor="middle">✦</text>
+    <text class="ink-dot d5" x="1040" y="20" font-size="11" fill="#b8d8d0" opacity=".35" text-anchor="middle">✦</text>
+  </svg>
+</div>
+
+<!-- SERVICES -->
+<section class="section svc-bg" id="services">
+  <div class="slabel">What I Offer</div>
+  <h2 class="stitle">Ways we can<br><em>work together</em></h2>
+  <div class="svc-grid">
+    <div class="svc rev"><span class="svc-icon">🌊</span><h3>Individual Therapy</h3><p>One-on-one sessions tailored entirely to you. We explore your inner landscape with curiosity, compassion, and depth.</p><span class="svc-tag">50 min sessions</span></div>
+    <div class="svc rev"><span class="svc-icon">🫧</span><h3>Anxiety &amp; Stress</h3><p>Specialised support for anxiety, burnout, and chronic stress. Learn to move from overwhelm into grounded, embodied calm.</p><span class="svc-tag">Evidence-based</span></div>
+    <div class="svc rev"><span class="svc-icon">🌿</span><h3>Grief &amp; Loss</h3><p>A tender space to honour what has been lost. Grief is love with nowhere left to go — and it deserves witness.</p><span class="svc-tag">Gentle paced</span></div>
+    <div class="svc rev"><span class="svc-icon">🐚</span><h3>Trauma Healing</h3><p>Trauma-informed care using somatic and EMDR approaches. Healing is not linear — and that's more than okay.</p><span class="svc-tag">Somatic + EMDR</span></div>
+    <div class="svc rev"><span class="svc-icon">🌙</span><h3>Relationship Patterns</h3><p>Explore how your earliest bonds shape your current connections. Find healthier ways of relating to yourself and others.</p><span class="svc-tag">Attachment-focused</span></div>
+    <div class="svc rev"><span class="svc-icon">✨</span><h3>Online Sessions</h3><p>Therapy from the comfort of your space. Secure, private video sessions available globally — healing knows no distance.</p><span class="svc-tag">Worldwide</span></div>
+  </div>
+</section>
+
+<!-- Calligraphy 3: services → approach -->
+<div class="callig" id="cal3" style="background:var(--w4);padding:14px 0;">
+  <svg viewBox="0 0 1440 110" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:110px;overflow:visible;">
+    <path class="ink-path" d="M 20 60 C 140 95, 320 20, 500 58 C 680 96, 820 18, 1000 55 C 1180 92, 1320 22, 1430 50" stroke="#6b9e8f" stroke-width="1.9" stroke-linecap="round" fill="none" opacity=".48"/>
+    <path class="ink-path d1" d="M 60 72 C 200 50, 400 85, 600 65 C 800 45, 1000 80, 1200 60 C 1340 46, 1400 68, 1430 62" stroke="#b8d8d0" stroke-width="1" stroke-linecap="round" fill="none" opacity=".4"/>
+    <path class="ink-path d3" d="M 580 40 C 600 22, 624 12, 648 20 C 668 28, 670 46, 654 50 C 636 54, 612 46, 606 58 C 600 68, 616 78, 630 74" stroke="#3d6b5e" stroke-width="1.4" stroke-linecap="round" fill="none" opacity=".35"/>
+    <path class="ink-path d2" d="M 1000 38 C 1020 20, 1040 10, 1060 18 C 1074 24, 1072 36, 1056 38" stroke="#6b9e8f" stroke-width="1.1" stroke-linecap="round" fill="none" opacity=".32"/>
+    <path class="ink-path d4" d="M 250 80 C 270 68, 290 62, 310 70" stroke="#b8d8d0" stroke-width="1.2" stroke-linecap="round" fill="none" opacity=".35"/>
+    <circle class="ink-dot d3" cx="320" cy="42" r="3.5" fill="#6b9e8f" opacity=".3"/>
+    <circle class="ink-dot d4" cx="820" cy="36" r="4" fill="#6b9e8f" opacity=".28"/>
+    <circle class="ink-dot d5" cx="1200" cy="56" r="2.5" fill="#b8d8d0" opacity=".32"/>
+    <circle class="ink-dot d2" cx="140" cy="76" r="2" fill="#b8d8d0" opacity=".35"/>
+    <text class="ink-dot d4" x="500" y="28" font-size="10" fill="#6b9e8f" opacity=".3" text-anchor="middle">✦</text>
+    <text class="ink-dot d5" x="1060" y="20" font-size="8" fill="#b8d8d0" opacity=".35" text-anchor="middle">✦</text>
+    <text class="ink-dot d6" x="760" y="18" font-size="9" fill="#6b9e8f" opacity=".28" text-anchor="middle">✦</text>
+  </svg>
+</div>
+
+<!-- APPROACH -->
+<section class="section app-bg" id="approach">
+  <div class="sg-wrap" id="seagrass"></div>
+  <div class="slabel">My Philosophy</div>
+  <h2 class="stitle">A gentle approach<br><em>to deep healing</em></h2>
+  <div class="app-grid">
+    <div class="steps">
+      <div class="step rev"><div class="step-n">01</div><div><h4>Safety First</h4><p>Before anything, we build a space where you feel genuinely safe. No rush, no agenda — just presence and warmth.</p></div></div>
+      <div class="step rev"><div class="step-n">02</div><div><h4>Explore &amp; Understand</h4><p>We gently explore patterns, beliefs, and stories — illuminating what lives in the shadows with kindness.</p></div></div>
+      <div class="step rev"><div class="step-n">03</div><div><h4>Integrate &amp; Heal</h4><p>Insight becomes transformation. We weave what we've discovered into lasting, embodied change.</p></div></div>
+      <div class="step rev"><div class="step-n">04</div><div><h4>Flourish &amp; Flow</h4><p>Life opens. You move through it differently — with more ease, self-trust, and quiet joy.</p></div></div>
+    </div>
+    <div class="qsphere rev-r">
+      <div class="sphere">
+        <div class="sr1"></div><div class="sr2"></div>
+        <p class="sphere-txt">"The wound is the place<br>where the<br><em>light enters</em><br>you."<small>— Rumi</small></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Calligraphy 4: approach → testimonials (light→dark) -->
+<div class="callig" id="cal4" style="background:linear-gradient(180deg,var(--w3) 0%,var(--dusk) 100%);padding:16px 0;">
+  <svg viewBox="0 0 1440 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:100px;overflow:visible;">
+    <path class="ink-path" d="M 40 55 C 180 18, 360 88, 560 42 C 760 -4, 920 72, 1120 38 C 1280 12, 1380 60, 1430 45" stroke="#cfe6df" stroke-width="1.8" stroke-linecap="round" fill="none" opacity=".55"/>
+    <path class="ink-path d1" d="M 80 70 C 260 48, 480 82, 700 58 C 920 34, 1120 74, 1360 52" stroke="rgba(184,216,208,0.45)" stroke-width="1" stroke-linecap="round" fill="none" opacity=".4"/>
+    <path class="ink-path d2" d="M 720 24 C 748 8, 776 0, 802 10 C 822 18, 820 34, 800 36 C 778 38, 752 28, 744 40 C 738 50, 756 60, 770 56" stroke="#a8c5bc" stroke-width="1.3" stroke-linecap="round" fill="none" opacity=".5"/>
+    <path class="ink-path d3" d="M 42 50 C 24 36, 14 18, 28 6 C 38 -2, 52 6, 46 20 C 40 34, 26 40, 42 50Z" stroke="#a8c5bc" stroke-width="1.2" fill="none" opacity=".45"/>
+    <path class="ink-path d3" d="M 1430 48 C 1418 32, 1432 14, 1438 4" stroke="#a8c5bc" stroke-width="1" stroke-linecap="round" fill="none" opacity=".4"/>
+    <circle class="ink-dot d3" cx="360" cy="70" r="3.5" fill="#a8c5bc" opacity=".45"/>
+    <circle class="ink-dot d4" cx="760" cy="38" r="4" fill="#cfe6df" opacity=".5"/>
+    <circle class="ink-dot d5" cx="1120" cy="36" r="3" fill="#a8c5bc" opacity=".4"/>
+    <text class="ink-dot d4" x="560" y="18" font-size="10" fill="#cfe6df" opacity=".5" text-anchor="middle">✦</text>
+    <text class="ink-dot d5" x="940" y="22" font-size="8" fill="#a8c5bc" opacity=".45" text-anchor="middle">✦</text>
+  </svg>
+</div>
+
+<!-- TESTIMONIALS -->
+<section class="testi" id="testimonials">
+  <canvas id="testiCanvas"></canvas>
+  <div class="slabel">Voices</div>
+  <h2 class="stitle">Words from those who've<br><em>walked this path</em></h2>
+  <div class="tgrid">
+    <div class="tcard rev"><div class="qm">"</div><p>Working with Athaang felt like learning to breathe again. I came in drowning in anxiety and left feeling like myself — for the first time in years.</p><div class="author">— Priya M.</div><div class="stars">★★★★★</div></div>
+    <div class="tcard rev"><div class="qm">"</div><p>There's a rare quality of presence in Athaang's sessions. I never felt judged. I always felt held. Therapy became something I genuinely looked forward to.</p><div class="author">— Arjun K.</div><div class="stars">★★★★★</div></div>
+    <div class="tcard rev"><div class="qm">"</div><p>Grief made my world very small. Athaang helped me find colour in it again — gently, slowly, beautifully. I'm forever grateful.</p><div class="author">— Nisha T.</div><div class="stars">★★★★★</div></div>
+  </div>
+</section>
+
+<!-- Calligraphy 5: testimonials → contact (dark→light) -->
+<div class="callig" id="cal5" style="background:linear-gradient(180deg,var(--dusk) 0%,var(--foam) 100%);padding:16px 0;">
+  <svg viewBox="0 0 1440 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:100px;overflow:visible;">
+    <path class="ink-path" d="M 50 45 C 200 80, 400 10, 620 55 C 840 100, 1020 14, 1240 52 C 1350 68, 1400 42, 1430 48" stroke="#b8d8d0" stroke-width="1.8" stroke-linecap="round" fill="none" opacity=".55"/>
+    <path class="ink-path d1" d="M 90 58 C 280 38, 520 72, 760 50 C 1000 28, 1200 66, 1400 48" stroke="rgba(226,240,236,0.6)" stroke-width="1" stroke-linecap="round" fill="none" opacity=".45"/>
+    <path class="ink-path d3" d="M 680 32 C 708 14, 738 5, 764 15 C 784 24, 782 42, 762 44 C 740 46, 712 34, 706 48 C 700 60, 718 70, 734 66" stroke="#b8d8d0" stroke-width="1.3" stroke-linecap="round" fill="none" opacity=".5"/>
+    <path class="ink-path d2" d="M 52 40 C 34 26, 22 8, 36 -2 C 46 -8, 60 0, 54 14 C 48 28, 34 34, 52 40Z" stroke="#b8d8d0" stroke-width="1.2" fill="none" opacity=".45"/>
+    <path class="ink-path d4" d="M 300 70 C 330 58, 360 52, 388 62" stroke="rgba(184,216,208,0.5)" stroke-width="1.2" stroke-linecap="round" fill="none" opacity=".4"/>
+    <path class="ink-path d4" d="M 1080 36 C 1100 18, 1124 8, 1148 18 C 1164 26, 1160 40, 1144 42" stroke="#b8d8d0" stroke-width="1.1" stroke-linecap="round" fill="none" opacity=".4"/>
+    <circle class="ink-dot d3" cx="240" cy="58" r="3" fill="#b8d8d0" opacity=".45"/>
+    <circle class="ink-dot d4" cx="620" cy="52" r="4" fill="#cfe6df" opacity=".5"/>
+    <circle class="ink-dot d5" cx="1020" cy="24" r="3" fill="#b8d8d0" opacity=".42"/>
+    <circle class="ink-dot d5" cx="1380" cy="44" r="2.5" fill="#b8d8d0" opacity=".38"/>
+    <text class="ink-dot d4" x="460" y="20" font-size="9" fill="#b8d8d0" opacity=".5" text-anchor="middle">✦</text>
+    <text class="ink-dot d5" x="860" y="16" font-size="10" fill="#cfe6df" opacity=".48" text-anchor="middle">✦</text>
+  </svg>
+</div>
+
+<!-- CONTACT -->
+<section class="section cnt-bg" id="contact">
+  <div class="slabel">Reach Out</div>
+  <h2 class="stitle">Ready to begin<br><em>your journey?</em></h2>
+  <div class="cnt-grid">
+    <div class="rev-l">
+      <h3 style="font-family:'DM Serif Display',serif;font-size:1.48rem;color:var(--deep);margin-bottom:26px;">Common questions</h3>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What happens in a first session?<span class="faq-tog">+</span></div><div class="faq-a">The first session is simply a conversation. We get to know each other, I understand what brings you here, and together we explore whether this feels like the right fit. No pressure — ever.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How long does therapy take?<span class="faq-tog">+</span></div><div class="faq-a">It depends entirely on you. Some find clarity in a few months; deeper transformations can take longer. We go at your pace — not a prescribed one.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Do you offer online sessions?<span class="faq-tog">+</span></div><div class="faq-a">Yes — all sessions are available online via a secure, encrypted platform. In-person sessions in Pune are also available on select days.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is everything kept confidential?<span class="faq-tog">+</span></div><div class="faq-a">Absolutely. Everything shared stays in our sessions. Confidentiality is foundational — and legally protected.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What are your fees?<span class="faq-tog">+</span></div><div class="faq-a">I offer a sliding scale to make therapy accessible. Please reach out and we'll find something that works for you — no one should choose between wellbeing and budget.</div></div>
+    </div>
+    <div class="rev-r">
+      <h3 style="font-family:'DM Serif Display',serif;font-size:1.48rem;color:var(--deep);margin-bottom:26px;">Send a message</h3>
+      <div class="cform">
+        <div class="fg"><label>Your name</label><input type="text" placeholder="What shall I call you?"></div>
+        <div class="fg"><label>Email</label><input type="email" placeholder="your@email.com"></div>
+        <div class="fg"><label>What are you seeking support for?</label>
+          <select><option value="">Choose an area...</option><option>Anxiety or stress</option><option>Grief or loss</option><option>Trauma healing</option><option>Relationship patterns</option><option>General wellbeing</option><option>Not sure yet</option></select>
+        </div>
+        <div class="fg"><label>Anything you'd like to share</label><textarea placeholder="There's no right or wrong thing to say here..."></textarea></div>
+        <button class="fsub" onclick="handleSubmit(this)">Send with care →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <svg class="fwave" viewBox="0 0 1440 68" preserveAspectRatio="none" fill="none"><path d="M0,34 C200,62 400,6 600,34 C800,62 1000,6 1200,34 C1360,56 1410,16 1440,34 L1440,0 L0,0Z" fill="#f0f7f5"/><path d="M0,50 C260,78 520,16 780,50 C1040,78 1260,20 1440,50 L1440,68 L0,68Z" fill="#0e1e1a"/></svg>
+  <div class="foot-in">
+    <div class="fbrand"><span class="fname">Athaang</span><p>A gentle, watery sanctuary for healing, growth, and returning home to yourself.</p></div>
+    <div class="fcol"><h5>Navigate</h5><ul><li><a href="#about">About</a></li><li><a href="#services">Services</a></li><li><a href="#approach">Approach</a></li><li><a href="#contact">Contact</a></li></ul></div>
+    <div class="fcol"><h5>Connect</h5><ul><li><a href="#">Instagram</a></li><li><a href="#">LinkedIn</a></li><li><a href="#">hello@athaang.com</a></li><li><a href="#"></a></li></ul></div>
+  </div>
+  <div class="fbot">
+    <p>© 2025 Athaang. All rights reserved.</p>
+    <p style="font-family:'Caveat',cursive;font-size:.9rem;color:#a8c5bc;opacity:.42;">made with 🌊 and care</p>
+  </div>
+</footer>
+
+<script>
+/* ════════════════════════════════════════════
+   BEACH SCENE — full canvas
+   Draws: sky gradient, sun + shimmer path,
+   ocean (deep to shallow), 4 swell layers,
+   foam wisps, wet sand, dry sand.
+   All motion is ultra-slow & sine-driven.
+════════════════════════════════════════════ */
+const bc  = document.getElementById('beachCanvas');
+const bx  = bc.getContext('2d');
+
+function resizeBC() {
+  bc.width  = bc.offsetWidth  || window.innerWidth;
+  bc.height = bc.offsetHeight || window.innerHeight;
+}
+resizeBC();
+window.addEventListener('resize', resizeBC);
+
+// Wave state — each swell is independent, very slow
+const SWELLS = [
+  // { relY, amplitude, freq, speed, phase, alpha, color }
+  { relY:0.62, amp:18, freq:0.48, spd:0.0006, ph:0,    a:0.55, col:'#9ec8bc' },
+  { relY:0.68, amp:14, freq:0.56, spd:0.0008, ph:1.3,  a:0.60, col:'#aed4c8' },
+  { relY:0.74, amp:20, freq:0.44, spd:0.0005, ph:2.6,  a:0.65, col:'#bdddd4' },
+  { relY:0.80, amp:12, freq:0.62, spd:0.0009, ph:0.9,  a:0.72, col:'#cce6de' },
+  { relY:0.86, amp:16, freq:0.52, spd:0.0007, ph:2.0,  a:0.78, col:'#d8edea' },
+  // shoreline — the key calming wave
+  { relY:0.90, amp: 9, freq:0.70, spd:0.0010, ph:3.2,  a:0.88, col:'#e4f2ef' },
+];
+
+// Foam wisps — small oval patches that drift in then fade
+const WISPS = Array.from({ length: 12 }, (_, i) => ({
+  x: Math.random(),          // 0-1 normalised
+  relY: 0.895 + Math.random() * 0.04,
+  w: 0.04 + Math.random() * 0.08,
+  h: 0.004 + Math.random() * 0.006,
+  phase: Math.random() * Math.PI * 2,
+  spd: 0.0004 + Math.random() * 0.0004,
+  life: Math.random(),       // 0-1 opacity breath
+  lifeSp: 0.0008 + Math.random() * 0.0008,
+}));
+
+let T = 0;
+
+function drawBeach() {
+  const W = bc.width, H = bc.height;
+  bx.clearRect(0, 0, W, H);
+
+  /* — SKY — */
+  const sky = bx.createLinearGradient(0, 0, 0, H * 0.58);
+  sky.addColorStop(0,   '#d0e8f6');
+  sky.addColorStop(0.4, '#c4deef');
+  sky.addColorStop(1,   '#b8d6eb');
+  bx.fillStyle = sky;
+  bx.fillRect(0, 0, W, H * 0.58);
+
+  /* — SUN — soft warm disc */
+  const sunX = W * 0.76, sunY = H * 0.18, sunR = Math.min(W,H) * 0.065;
+  const sunG = bx.createRadialGradient(sunX, sunY, 0, sunX, sunY, sunR * 3.2);
+  sunG.addColorStop(0,   'rgba(255,240,190,0.55)');
+  sunG.addColorStop(0.35,'rgba(255,230,160,0.3)');
+  sunG.addColorStop(1,   'rgba(255,230,160,0)');
+  bx.fillStyle = sunG;
+  bx.beginPath();
+  bx.arc(sunX, sunY, sunR * 3.2, 0, Math.PI * 2);
+  bx.fill();
+  // core
+  const sunCore = bx.createRadialGradient(sunX, sunY, 0, sunX, sunY, sunR);
+  sunCore.addColorStop(0, 'rgba(255,248,220,0.9)');
+  sunCore.addColorStop(1, 'rgba(255,240,180,0.5)');
+  bx.fillStyle = sunCore;
+  bx.beginPath();
+  bx.arc(sunX, sunY, sunR, 0, Math.PI * 2);
+  bx.fill();
+
+  /* — SUN PATH on water — shimmering ribbon */
+  const pathW = W * 0.14;
+  const pathGrad = bx.createLinearGradient(0, H * 0.58, 0, H * 0.92);
+  pathGrad.addColorStop(0,   'rgba(255,240,180,0.28)');
+  pathGrad.addColorStop(0.6, 'rgba(255,240,180,0.1)');
+  pathGrad.addColorStop(1,   'rgba(255,240,180,0)');
+  bx.fillStyle = pathGrad;
+  bx.beginPath();
+  bx.moveTo(sunX - pathW * 0.3, H * 0.58);
+  bx.quadraticCurveTo(sunX, H * 0.72, sunX - pathW, H * 0.92);
+  bx.lineTo(sunX + pathW, H * 0.92);
+  bx.quadraticCurveTo(sunX, H * 0.72, sunX + pathW * 0.3, H * 0.58);
+  bx.closePath();
+  bx.fill();
+  // shimmer flecks along path
+  for (let i = 0; i < 6; i++) {
+    const fy = H * (0.60 + i * 0.045);
+    const fw = pathW * (0.3 + i * 0.12);
+    const fo = (0.3 + 0.1 * Math.sin(T * 0.03 + i * 1.1)) * (1 - i * 0.1);
+    bx.fillStyle = `rgba(255,248,200,${fo})`;
+    bx.beginPath();
+    bx.ellipse(sunX + Math.sin(T * 0.008 + i) * fw * 0.2, fy, fw * 0.8, H * 0.007, 0, 0, Math.PI * 2);
+    bx.fill();
+  }
+
+  /* — DEEP OCEAN (below sky horizon) — */
+  const oceanY = H * 0.57;
+  const ocean = bx.createLinearGradient(0, oceanY, 0, H * 0.91);
+  ocean.addColorStop(0,   '#8bbdce');
+  ocean.addColorStop(0.3, '#9ac8cc');
+  ocean.addColorStop(0.65,'#aad5cc');
+  ocean.addColorStop(1,   '#bee2d8');
+  bx.fillStyle = ocean;
+  bx.fillRect(0, oceanY, W, H * 0.91 - oceanY);
+
+  /* — SWELLS — */
+  SWELLS.forEach((sw, idx) => {
+    const baseY = H * sw.relY;
+    bx.beginPath();
+    bx.moveTo(0, baseY);
+    for (let x = 0; x <= W; x += 3) {
+      const nx = x / W;
+      // Primary swell + secondary harmonic (much smaller)
+      const y = baseY
+        + Math.sin(nx * Math.PI * 2 * sw.freq + T * sw.spd * 60 + sw.ph) * sw.amp
+        + Math.sin(nx * Math.PI * 2 * sw.freq * 1.62 + T * sw.spd * 42 + sw.ph + 1.1) * sw.amp * 0.22;
+      bx.lineTo(x, y);
+    }
+    bx.lineTo(W, H); bx.lineTo(0, H); bx.closePath();
+
+    const grad = bx.createLinearGradient(0, baseY - sw.amp, 0, H);
+    grad.addColorStop(0,   hexAlpha(sw.col, sw.a - 0.12));
+    grad.addColorStop(0.4, hexAlpha(sw.col, sw.a));
+    grad.addColorStop(1,   hexAlpha(sw.col, sw.a + 0.08));
+    bx.fillStyle = grad;
+    bx.fill();
+
+    // Crest highlight — thin lighter line along the wave top
+    if (idx >= 3) {
+      bx.beginPath();
+      bx.moveTo(0, baseY);
+      for (let x = 0; x <= W; x += 3) {
+        const nx = x / W;
+        const y = baseY
+          + Math.sin(nx * Math.PI * 2 * sw.freq + T * sw.spd * 60 + sw.ph) * sw.amp
+          + Math.sin(nx * Math.PI * 2 * sw.freq * 1.62 + T * sw.spd * 42 + sw.ph + 1.1) * sw.amp * 0.22;
+        bx.lineTo(x, y);
+      }
+      bx.strokeStyle = 'rgba(255,255,255,0.32)';
+      bx.lineWidth = 1.5;
+      bx.stroke();
+    }
+  });
+
+  /* — FOAM WISPS — */
+  WISPS.forEach(w => {
+    w.life += w.lifeSp;
+    if (w.life > 1) { w.life = 0; w.x = Math.random(); }
+    const lifeA = Math.sin(w.life * Math.PI) * 0.55; // fade in, fade out
+    const wx = w.x * W + Math.sin(T * w.spd * 40 + w.phase) * W * 0.015;
+    const wy = H * w.relY + Math.sin(T * w.spd * 55 + w.phase + 1) * 4;
+    bx.beginPath();
+    bx.ellipse(wx, wy, w.w * W, w.h * H, 0, 0, Math.PI * 2);
+    bx.fillStyle = `rgba(255,255,255,${lifeA})`;
+    bx.fill();
+  });
+
+  /* — WET SAND (shoreline) — */
+  const wetY = H * 0.91;
+  const wet = bx.createLinearGradient(0, wetY, 0, H * 0.95);
+  wet.addColorStop(0, '#ccddd8');
+  wet.addColorStop(1, '#d8e6e0');
+  bx.fillStyle = wet;
+  // gentle wet sand edge follows topmost swell
+  bx.beginPath();
+  bx.moveTo(0, wetY);
+  for (let x = 0; x <= W; x += 4) {
+    const nx = x / W;
+    const sw = SWELLS[5];
+    const y = wetY
+      + Math.sin(nx * Math.PI * 2 * sw.freq + T * sw.spd * 60 + sw.ph) * 5
+      + Math.sin(nx * Math.PI * 2 * sw.freq * 1.6 + T * sw.spd * 42 + sw.ph + 1) * 2;
+    bx.lineTo(x, y);
+  }
+  bx.lineTo(W, H); bx.lineTo(0, H); bx.closePath();
+  bx.fill();
+
+  /* — DRY SAND — */
+  const dry = bx.createLinearGradient(0, H * 0.94, 0, H);
+  dry.addColorStop(0, '#e8dfc8');
+  dry.addColorStop(1, '#f0e9da');
+  bx.fillStyle = dry;
+  bx.fillRect(0, H * 0.945, W, H * 0.055 + 2);
+
+  T++;
+  requestAnimationFrame(drawBeach);
+}
+drawBeach();
+
+/* Hex + alpha helper */
+function hexAlpha(hex, a) {
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${Math.max(0,Math.min(1,a))})`;
+}
+
+/* ── TESTIMONIALS soft wave canvas ── */
+const tc = document.getElementById('testiCanvas');
+const tx = tc.getContext('2d');
+function resizeTC() { tc.width = tc.offsetWidth||window.innerWidth; tc.height = tc.offsetHeight||600; }
+resizeTC();
+window.addEventListener('resize', resizeTC);
+const TW = [
+  { relY:0.38, amp:18, freq:0.46, spd:0.0005, ph:0, col:'rgba(107,158,143,0.14)' },
+  { relY:0.56, amp:14, freq:0.58, spd:0.0007, ph:1.5, col:'rgba(107,158,143,0.10)' },
+  { relY:0.72, amp:22, freq:0.42, spd:0.0004, ph:2.8, col:'rgba(61,107,94,0.08)' },
+  { relY:0.86, amp:10, freq:0.66, spd:0.0008, ph:0.7, col:'rgba(184,216,208,0.12)' },
+];
+let T2 = 0;
+function drawTesti() {
+  const W = tc.width, H = tc.height;
+  tx.clearRect(0,0,W,H);
+  TW.forEach(w => {
+    const by = H * w.relY;
+    tx.beginPath(); tx.moveTo(0, by);
+    for (let x=0; x<=W; x+=4) {
+      const nx = x/W;
+      const y = by
+        + Math.sin(nx*Math.PI*2*w.freq + T2*w.spd*60 + w.ph)*w.amp
+        + Math.sin(nx*Math.PI*2*w.freq*1.55 + T2*w.spd*40 + w.ph+1)*w.amp*0.25;
+      tx.lineTo(x,y);
+    }
+    tx.lineTo(W,H); tx.lineTo(0,H); tx.closePath();
+    tx.fillStyle = w.col; tx.fill();
+  });
+  T2++;
+  requestAnimationFrame(drawTesti);
+}
+drawTesti();
+
+/* ── SEAGRASS ── */
+const sg = document.getElementById('seagrass');
+for (let i=0; i<28; i++) {
+  const bl = document.createElement('div');
+  bl.className = 'gblade';
+  const h   = 28 + Math.random()*65;
+  const dur = 5 + Math.random()*4;
+  const del = Math.random()*5;
+  bl.style.cssText = `width:${2+Math.random()*2}px;height:${h}px;left:${Math.random()*100}%;opacity:${.07+Math.random()*.16};animation:sway ${dur}s ease-in-out ${del}s infinite alternate;`;
+  sg.appendChild(bl);
+}
+// CSS for sway
+const style = document.createElement('style');
+style.textContent = '@keyframes sway{0%{transform:rotate(-9deg) skewX(-2deg);}100%{transform:rotate(9deg) skewX(2deg);}}';
+document.head.appendChild(style);
+
+/* ── CURSOR ── */
+const cur=document.getElementById('cur'), cur2=document.getElementById('cur2');
+let mx=0,my=0;
+document.addEventListener('mousemove',e=>{ mx=e.clientX; my=e.clientY; cur.style.left=mx+'px'; cur.style.top=my+'px'; setTimeout(()=>{ cur2.style.left=mx+'px'; cur2.style.top=my+'px'; },100); });
+document.querySelectorAll('a,button,.svc,.faq-q,.tcard,.step').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{ cur.style.width='24px'; cur.style.height='24px'; cur.style.background='rgba(107,158,143,.16)'; });
+  el.addEventListener('mouseleave',()=>{ cur.style.width='12px'; cur.style.height='12px'; cur.style.background='transparent'; });
+});
+
+/* ── CALLIGRAPHY DRAW-ON ── */
+// Set each ink-path dasharray to its actual length for perfect draw effect
+document.querySelectorAll('.ink-path').forEach(p => {
+  try {
+    const len = p.getTotalLength ? p.getTotalLength() : 600;
+    p.style.strokeDasharray = len;
+    p.style.strokeDashoffset = len;
+  } catch(e) {
+    p.style.strokeDasharray = 600;
+    p.style.strokeDashoffset = 600;
+  }
+});
+
+const calObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('ink-drawn');
+      calObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.3 });
+
+document.querySelectorAll('.callig').forEach(el => calObs.observe(el));
+
+/* ── SCROLL REVEAL ── */
+const allR = document.querySelectorAll('.rev,.rev-l,.rev-r');
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ const i=Array.from(allR).indexOf(e.target); setTimeout(()=>e.target.classList.add('vis'), i*60); } });
+},{ threshold:.12 });
+allR.forEach(el=>obs.observe(el));
+
+/* ── FAQ ── */
+function toggleFaq(el){ const item=el.closest('.faq-item'); const open=item.classList.contains('open'); document.querySelectorAll('.faq-item').forEach(f=>f.classList.remove('open')); if(!open)item.classList.add('open'); }
+
+/* ── FORM ── */
+function handleSubmit(btn){ btn.textContent='Message sent 🌊'; btn.style.background='var(--sage)'; setTimeout(()=>{ btn.textContent='Send with care →'; btn.style.background=''; },3200); }
+</script>
+</body>
+</html>
