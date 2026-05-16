@@ -138,10 +138,10 @@ export function Footer() {
         <div className="fcol">
           <h5>Connect</h5>
           <ul>
-            <li><a href="#">Instagram</a></li>
-            <li><a href="#">LinkedIn</a></li>
-            <li><a href="#">hello@athaang.com</a></li>
-            <li><a href="#">+91 98765 43210</a></li>
+            <li><a href="https://instagram.com" target="_blank" rel="noreferrer">Instagram</a></li>
+            <li><a href="https://linkedin.com" target="_blank" rel="noreferrer">LinkedIn</a></li>
+            <li><a href="mailto:hello@athaang.com">hello@athaang.com</a></li>
+            <li><a href="tel:+919876543210">+91 98765 43210</a></li>
           </ul>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import './index.css';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import Nav from './components/Nav';
 import Hero from './components/Hero';
 import { Cal1, Cal2, Cal3, Cal4, Cal5 } from './components/Calligraphy';
@@ -22,7 +22,6 @@ export default function App() {
   useCursor();
 
   // Seagrass injection for approach section
-  const sgRef = useRef(null);
   useEffect(() => {
     const sg = document.getElementById('sg-target');
     if (!sg || sg.children.length > 0) return;
