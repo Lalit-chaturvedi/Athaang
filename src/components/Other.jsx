@@ -141,7 +141,6 @@ export function Footer() {
             <li><a href="https://instagram.com" target="_blank" rel="noreferrer">Instagram</a></li>
             <li><a href="https://linkedin.com" target="_blank" rel="noreferrer">LinkedIn</a></li>
             <li><a href="mailto:hello@athaang.com">hello@athaang.com</a></li>
-            <li><a href="tel:+919876543210">+91 98765 43210</a></li>
           </ul>
         </div>
       </div>
